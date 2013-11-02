@@ -51,9 +51,7 @@ sub build_app {
     my $self = shift;
     my $path = shift;
 
-    return Plack::Builder::builder {
-        Plack::Util::load_psgi("$path/app.psgi");
-    };
+    return Plack::Util::load_psgi("$path/app.psgi");
 }
 
 sub is_current_dir {
