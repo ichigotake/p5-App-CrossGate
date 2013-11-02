@@ -19,7 +19,6 @@ sub build {
     my $dir = path($args{ dir } || '.');
     my $is_current_dir = $self->is_current_dir($dir);
 
-    my @app_lib = qw| lib extlib local/lib/perl5 |;
     my $iter = $dir->iterator;
     while ( my $app_path = $iter->() ) {
         next unless path("$app_path/app.psgi")->exists;
@@ -38,7 +37,6 @@ sub build {
         };
         push( @apps, $conf );
         print "mount '$conf->{endpoint}' => $conf->{app_path}" . $/;
-        unshift(@INC, "$app_path/$_") for @app_lib;
     }
 
     require Plack::Builder;
