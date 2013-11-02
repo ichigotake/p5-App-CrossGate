@@ -4,5 +4,10 @@ Revision history for Perl extension Plack-Builder-AutoDetector
 
 0.02 2013-11-02T16:44:54Z
 
-    - original version
+    - add sample
+    - don't support for add library path
+    - Fix bug invalid mount path when "path" is current directory
+    - rename method "run" to "build"
+    - rename option "path" to "dir" for suppress mistake
+    - remove redundant things
 
