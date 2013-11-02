@@ -17,11 +17,20 @@ sub build {
 
     my @apps;
     my $path = $args{ path } || '.';
+    my $is_current_dir = $self->is_current_dir(path($path));
 
     my @app_lib = qw| lib extlib local/lib/perl5 |;
     my $iter = path($path)->iterator;
     while ( my $app_path = $iter->() ) {
-        my ($endpoint) = $app_path =~ m/^$path(.*)/;
+        next unless path("$app_path/app.psgi")->exists;
+
+        my $endpoint;
+        if ($is_current_dir) {
+            $endpoint = $app_path;
+        } else {
+            ($endpoint) = $app_path =~ m/^$path(.*)/;
+        }
+        $endpoint = '/'.$endpoint unless $endpoint =~ m|^/|;
 
         my $conf = +{
             endpoint => $endpoint,
@@ -49,6 +58,12 @@ sub build_app {
     };
 }
 
+sub is_current_dir {
+    my $self = shift;
+    my $dir = shift;
+    return path('.')->realpath eq $dir->realpath;
+    
+}
 1;
 __END__
 
