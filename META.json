@@ -1,5 +1,5 @@
 {
-   "abstract" : "It's new $module",
+   "abstract" : "Auto detect mount path for app.psgi.",
    "author" : [
       "ichigotake <k.wisiiy@gmail.com>"
    ],
@@ -43,6 +43,8 @@
       },
       "runtime" : {
          "requires" : {
+            "Path::Tiny" : "0",
+            "Plack" : "0",
             "perl" : "5.008005"
          }
       },
@@ -53,5 +55,16 @@
       }
    },
    "release_status" : "unstable",
-   "version" : "0.01"
+   "resources" : {
+      "bugtracker" : {
+         "web" : "https://github.com/ichigotake/p5-Plack-Builder-AutoDetector/issues"
+      },
+      "homepage" : "https://github.com/ichigotake/p5-Plack-Builder-AutoDetector",
+      "repository" : {
+         "type" : "git",
+         "url" : "git://github.com/ichigotake/p5-Plack-Builder-AutoDetector.git",
+         "web" : "https://github.com/ichigotake/p5-Plack-Builder-AutoDetector"
+      }
+   },
+   "version" : "0.02"
 }

@@ -5,7 +5,7 @@ use warnings;
 use Plack::Util;
 use Path::Tiny;
 
-our $VERSION = "0.01";
+our $VERSION = "0.02";
 
 sub new {
     my $self = bless {}, shift;
