@@ -10,7 +10,7 @@ Plack::Builder::AutoDetector - Auto detect mount path for app.psgi.
     $builder = Plack::Builder::AutoDetector->new;
 
     builder {
-        mount '/' => $builder->run(
+        mount '/' => $builder->build(
             path => 'app/',
         );
     };
@@ -33,7 +33,7 @@ If this structure and auto\_detect.psgi there,
     $builder = Plack::Builder::AutoDetector->new;
 
     builder {
-        mount '/' => $builder->run(
+        mount '/' => $builder->build(
             path => 'app/',
         );
     };
@@ -41,7 +41,7 @@ If this structure and auto\_detect.psgi there,
 
 
     # directory structure
-    |- auto_detect.psgi # run( path => 'app/' );
+    |- auto_detect.psgi # build( path => 'app/' );
     |
     `- app/
         |

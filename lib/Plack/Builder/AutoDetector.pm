@@ -11,7 +11,7 @@ sub new {
     my $self = bless {}, shift;
 }
 
-sub run {
+sub build {
     my $self = shift;
     my %args = @_;
 
@@ -66,7 +66,7 @@ Plack::Builder::AutoDetector - Auto detect mount path for app.psgi.
     $builder = Plack::Builder::AutoDetector->new;
 
     builder {
-        mount '/' => $builder->run(
+        mount '/' => $builder->build(
             path => 'app/',
         );
     };
@@ -88,14 +88,14 @@ If this structure and auto_detect.psgi there,
     $builder = Plack::Builder::AutoDetector->new;
 
     builder {
-        mount '/' => $builder->run(
+        mount '/' => $builder->build(
             path => 'app/',
         );
     };
 
 
     # directory structure
-    |- auto_detect.psgi # run( path => 'app/' );
+    |- auto_detect.psgi # build( path => 'app/' );
     |
     `- app/
         |
