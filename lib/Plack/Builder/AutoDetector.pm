@@ -16,11 +16,11 @@ sub build {
     my %args = @_;
 
     my @apps;
-    my $path = $args{ path } || '.';
-    my $is_current_dir = $self->is_current_dir(path($path));
+    my $dir = path($args{ dir } || '.');
+    my $is_current_dir = $self->is_current_dir($dir);
 
     my @app_lib = qw| lib extlib local/lib/perl5 |;
-    my $iter = path($path)->iterator;
+    my $iter = $dir->iterator;
     while ( my $app_path = $iter->() ) {
         next unless path("$app_path/app.psgi")->exists;
 
@@ -28,7 +28,7 @@ sub build {
         if ($is_current_dir) {
             $endpoint = $app_path;
         } else {
-            ($endpoint) = $app_path =~ m/^$path(.*)/;
+            ($endpoint) = $app_path =~ m/^$dir(.*)/;
         }
         $endpoint = '/'.$endpoint unless $endpoint =~ m|^/|;
 
@@ -82,7 +82,7 @@ Plack::Builder::AutoDetector - Auto detect mount path for app.psgi.
 
     builder {
         mount '/' => $builder->build(
-            path => 'app/',
+            dir => 'app/',
         );
     };
 
@@ -104,13 +104,13 @@ If this structure and auto_detect.psgi there,
 
     builder {
         mount '/' => $builder->build(
-            path => 'app/',
+            dir => 'app/',
         );
     };
 
 
     # directory structure
-    |- auto_detect.psgi # build( path => 'app/' );
+    |- auto_detect.psgi # build( dir => 'app/' );
     |
     `- app/
         |
