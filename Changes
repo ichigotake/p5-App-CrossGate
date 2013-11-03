@@ -2,6 +2,8 @@ Revision history for Perl extension Plack-Builder-AutoDetector
 
 {{$NEXT}}
 
+0.03 2013-11-03T02:18:44Z
+
     - add support for more simply call!!
 
 0.02 2013-11-02T16:44:54Z

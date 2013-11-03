@@ -6,7 +6,7 @@ use Plack::Util;
 use Path::Tiny;
 use Plack::Builder;
 
-our $VERSION = "0.02";
+our $VERSION = "0.03";
 
 sub new {
     my $self = bless {}, shift;
