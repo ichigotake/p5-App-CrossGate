@@ -27,7 +27,7 @@ sub _build_from_directory {
 
     my @apps;
     my $dir = path($args{ dir } || '.');
-    my $is_current_dir = $self->is_current_dir($dir);
+    my $is_current_dir = $self->_is_current_dir($dir);
 
     my $iter = $dir->iterator;
     while ( my $app_path = $iter->() ) {
@@ -52,18 +52,18 @@ sub _build_from_directory {
     Plack::Builder->import;
     for my $conf ( @apps ) {
         my $endpoint = "".$conf->{endpoint};
-        mount( $endpoint => $self->build_app($conf->{app_path}) );
+        mount( $endpoint => $self->_build_app($conf->{app_path}) );
     }
 }
 
-sub build_app {
+sub _build_app {
     my $self = shift;
     my $path = shift;
 
     return Plack::Util::load_psgi("$path/app.psgi");
 }
 
-sub is_current_dir {
+sub _is_current_dir {
     my $self = shift;
     my $dir = shift;
     return path('.')->realpath eq $dir->realpath;
