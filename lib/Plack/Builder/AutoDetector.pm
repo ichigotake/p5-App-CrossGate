@@ -4,6 +4,7 @@ use strict;
 use warnings;
 use Plack::Util;
 use Path::Tiny;
+use Plack::Builder;
 
 our $VERSION = "0.02";
 
@@ -12,6 +13,15 @@ sub new {
 }
 
 sub build {
+    my $self = shift;
+
+    Plack::Builder->import;
+    builder {
+        mount( '/', $self->_build_from_directory );
+    };
+}
+
+sub _build_from_directory {
     my $self = shift;
     my %args = @_;
 
@@ -39,7 +49,6 @@ sub build {
         print "mount '$conf->{endpoint}' => $conf->{app_path}" . $/;
     }
 
-    require Plack::Builder;
     Plack::Builder->import;
     for my $conf ( @apps ) {
         my $endpoint = "".$conf->{endpoint};
@@ -76,11 +85,9 @@ Plack::Builder::AutoDetector - Auto detect mount path for app.psgi.
 
     $builder = Plack::Builder::AutoDetector->new;
 
-    builder {
-        mount '/' => $builder->build(
-            dir => 'app/',
-        );
-    };
+    $builder->build(
+        dir => 'app/',
+    );
 
 
 =head1 DESCRIPTION
