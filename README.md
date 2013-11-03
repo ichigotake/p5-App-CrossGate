@@ -74,3 +74,7 @@ it under the same terms as Perl itself.
 # AUTHOR
 
 ichigotake <k.wisiiy@gmail.com>
+
+Special thanks
+
+Songmu

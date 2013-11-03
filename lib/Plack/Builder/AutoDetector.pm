@@ -138,5 +138,9 @@ it under the same terms as Perl itself.
 
 ichigotake E<lt>k.wisiiy@gmail.comE<gt>
 
+Special thanks
+
+Songmu
+
 =cut
 
