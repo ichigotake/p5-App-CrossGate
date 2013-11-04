@@ -35,12 +35,9 @@ sub _build_from_directory {
 
     my @apps = $self->_get_app_configs_from_dir(%args);
 
-    for my $conf ( @apps ) {
-        print "auto mount '$conf->{endpoint}' => $conf->{app_path}" . $/;
-    }
-
     Plack::Builder->import;
     for my $conf ( @apps ) {
+        print "auto mount '$conf->{endpoint}' => $conf->{app_path}" . $/;
         mount( $conf->{endpoint} => $self->_build_app($conf->{app_path}) );
     }
 }
@@ -80,10 +77,6 @@ sub _get_app_configs_from_dir {
         }
 
         $endpoint = '/'.$endpoint unless $endpoint =~ m|^/|;
-        if ('.' ne $base_dir) {
-            my $exclute = "$base_dir";
-            $endpoint =~ s|^$exclute||;
-        }
 
         (my $load_app_path = $app_path->realpath)
             =~ s|^$args{caller}->{dirname}/||;
