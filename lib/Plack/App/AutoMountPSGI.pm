@@ -2,8 +2,8 @@ package Plack::App::AutoMountPSGI;
 use 5.008005;
 use strict;
 use warnings;
-use Plack::Util;
 use Path::Tiny;
+use Plack::Util;
 use Plack::Builder;
 
 our $VERSION = "0.05";
@@ -34,7 +34,7 @@ sub _build_from_directory {
     my @apps = $self->_get_app_configs_from_dir(%args);
 
     for my $conf ( @apps ) {
-        print "mount '$conf->{endpoint}' => $conf->{app_path}" . $/;
+        print "auto mount '$conf->{endpoint}' => $conf->{app_path}" . $/;
     }
 
     Plack::Builder->import;
@@ -140,21 +140,13 @@ If this structure and app.psgi there,
 
     # directory structure
     |- app.psgi # to_app( dir => '.' );
-    |
     |- hey.psgi
-    |
     |- /hello
-    |   |
     |   `- app.psgi
-    |
     `- /mount
-        |
         |- app.psgi
-        |
         `- deep/
-            |
             |- app.psgi
-            |
             `- app2.psgi
         
 

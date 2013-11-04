@@ -45,21 +45,13 @@ If this structure and app.psgi there,
 
     # directory structure
     |- app.psgi # to_app( dir => '.' );
-    |
     |- hey.psgi
-    |
     |- /hello
-    |   |
     |   `- app.psgi
-    |
     `- /mount
-        |
         |- app.psgi
-        |
         `- deep/
-            |
             |- app.psgi
-            |
             `- app2.psgi
         
 
