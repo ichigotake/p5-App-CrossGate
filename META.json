@@ -1,5 +1,5 @@
 {
-   "abstract" : "Auto mount path for app.psgi.",
+   "abstract" : "Auto mount path for psgi files.",
    "author" : [
       "ichigotake <k.wisiiy@gmail.com>"
    ],
@@ -66,5 +66,5 @@
          "web" : "https://github.com/ichigotake/p5-Plack-App-AutoMountPSGI"
       }
    },
-   "version" : "0.04"
+   "version" : "0.05"
 }
