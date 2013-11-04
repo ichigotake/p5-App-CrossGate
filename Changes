@@ -2,6 +2,8 @@ Revision history for Perl extension Plack-App-AutoMountPSGI
 
 {{$NEXT}}
 
+0.04 2013-11-04T02:08:02Z
+
     - rename module to Plack::App:AutoMountPSGI
 
 0.03 2013-11-03T02:18:44Z
