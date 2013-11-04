@@ -14,10 +14,16 @@ sub new {
 
 sub to_app {
     my $self = shift;
+    my %args = @_;
+
+    my (undef, $filename, undef) = caller;
+    $args{caller} = {
+        filename => $filename,
+    };
 
     Plack::Builder->import;
     builder {
-        mount( '/', $self->_build_from_directory );
+        mount( '/', $self->_build_from_directory(%args) );
     };
 }
 
@@ -25,34 +31,15 @@ sub _build_from_directory {
     my $self = shift;
     my %args = @_;
 
-    my @apps;
-    my $dir = path($args{ dir } || '.');
-    my $is_current_dir = $self->_is_current_dir($dir);
+    my @apps = $self->_get_app_configs_from_dir(%args);
 
-    my $iter = $dir->iterator;
-    while ( my $app_path = $iter->() ) {
-        next unless path("$app_path/app.psgi")->exists;
-
-        my $endpoint;
-        if ($is_current_dir) {
-            $endpoint = $app_path;
-        } else {
-            ($endpoint) = $app_path =~ m/^$dir(.*)/;
-        }
-        $endpoint = '/'.$endpoint unless $endpoint =~ m|^/|;
-
-        my $conf = +{
-            endpoint => $endpoint,
-            app_path => $app_path . '',
-        };
-        push( @apps, $conf );
+    for my $conf ( @apps ) {
         print "mount '$conf->{endpoint}' => $conf->{app_path}" . $/;
     }
 
     Plack::Builder->import;
     for my $conf ( @apps ) {
-        my $endpoint = "".$conf->{endpoint};
-        mount( $endpoint => $self->_build_app($conf->{app_path}) );
+        mount( $conf->{endpoint} => $self->_build_app($conf->{app_path}) );
     }
 }
 
@@ -60,15 +47,49 @@ sub _build_app {
     my $self = shift;
     my $path = shift;
 
-    return Plack::Util::load_psgi("$path/app.psgi");
+    return Plack::Util::load_psgi("$path");
 }
 
-sub _is_current_dir {
+sub _get_app_configs_from_dir {
     my $self = shift;
-    my $dir = shift;
-    return path('.')->realpath eq $dir->realpath;
-    
+    my %args = @_;
+
+    my @apps;
+    my $iter = path($args{ dir } || '.')->iterator({
+        recurse => 1,
+        follow_symlinks => 0,
+    });
+    while ( my $app_path = $iter->() ) {
+        
+        if ($args{caller}->{filename} eq $app_path->realpath
+            || ! -f $app_path
+            || $app_path !~ m/\.psgi$/) {
+            next;
+        }
+        my @path = split'/', $app_path;
+        my $last_index = scalar(@path)-1;
+        my $psgi_file = $path[$last_index];
+        my $endpoint = "";
+        if (0 != $last_index) {
+            $endpoint = join('/', @path[0..($last_index-1)]);
+        }
+        if ('app.psgi' ne $psgi_file) {
+            my ($fname) = $psgi_file =~ m/(.*)\.psgi/;
+            $endpoint .= "/$fname";
+        }
+
+        $endpoint = '/'.$endpoint unless $endpoint =~ m|^/|;
+
+        my $conf = +{
+            endpoint => $endpoint,
+            app_path => $app_path,
+        };
+        push( @apps, $conf );
+    }
+
+    return @apps;
 }
+
 1;
 __END__
 
@@ -76,7 +97,7 @@ __END__
 
 =head1 NAME
 
-Plack::App::AutoMountPSGI - Auto mount path for app.psgi.
+Plack::App::AutoMountPSGI - Auto mount path for psgi files.
 
 =head1 SYNOPSIS
 
@@ -86,39 +107,55 @@ Plack::App::AutoMountPSGI - Auto mount path for app.psgi.
     $app = Plack::App::AutoMountPSGI->new;
 
     $app->to_app(
-        dir => 'app/',
+        dir => 'example/',
     );
+
+    # run
+    example$ plackup 
+    mount '/hey' => hey.psgi
+    mount '/hello' => hello/app.psgi
+    mount '/mount' => mount/app.psgi
+    mount '/mount/deep' => mount/deep/app.psgi
+    mount '/mount/deep/app2' => mount/deep/app2.psgi
+    HTTP::Server::PSGI: Accepting connections at http://0:5000/
 
 
 =head1 DESCRIPTION
 
 This module is auto mount path for app.psgi.
 
-Mount path is a directry path.
+Mount path is a directry path. And "app.psgi" is root path. ("/")
 
 =head1 EXAMPLE
 
-If this structure and auto_detect.psgi there,
+If this structure and app.psgi there,
 
-    # auto_detect.psgi
+    # app.psgi
     use Plack::App::AutoMountPSGI;
 
     $app = Plack::App::AutoMountPSGI->new;
 
-    builder {
-        mount '/' => $app->to_app(
-            dir => 'app/',
-        );
-    };
+    $app->to_app( dir => '.' );
 
 
     # directory structure
-    |- auto_detect.psgi # to_app( dir => 'app/' );
+    |- app.psgi # to_app( dir => '.' );
     |
-    `- app/
+    |- hey.psgi
+    |
+    |- /hello
+    |   |
+    |   `- app.psgi
+    |
+    `- /mount
         |
-        |- hello/app.psgi
-        `- good_morning/app.psgi
+        |- app.psgi
+        |
+        `- deep/
+            |
+            |- app.psgi
+            |
+            `- app2.psgi
         
 
 same a following mount path.
@@ -126,11 +163,16 @@ same a following mount path.
     use Plack::Builder;
 
     builder {
-        mount '/hello' => Plack::Util::load_psgi('hello/app.psgi');
-        mount '/good_morning' => Plack::Util::load_psgi('good_morning/app.psgi');
+        mount '/hey'             => Plack::Util::load_psgi('hey.psgi');
+        mount '/hello'           => Plack::Util::load_psgi('hello/app.psgi');
+        mount '/mount'           => Plack::Util::load_psgi('mount/app.psgi');
+        mount '/mount/deep'      => Plack::Util::load_psgi('mount/deep/app.psgi');
+        mount '/mount/deep/app2' => Plack::Util::load_psgi('mount/deep/app2.psgi');
     };
 
 =head1 SEE ALSO
+
+You can see "example/" directory for example detail.
 
 Plack::Builder
 

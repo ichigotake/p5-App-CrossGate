@@ -1,6 +1,6 @@
 # NAME
 
-Plack::App::AutoMountPSGI - Auto mount path for app.psgi.
+Plack::App::AutoMountPSGI - Auto mount path for psgi files.
 
 # SYNOPSIS
 
@@ -10,8 +10,17 @@ Plack::App::AutoMountPSGI - Auto mount path for app.psgi.
     $app = Plack::App::AutoMountPSGI->new;
 
     $app->to_app(
-        dir => 'app/',
+        dir => 'example/',
     );
+
+    # run
+    example$ plackup 
+    mount '/hey' => hey.psgi
+    mount '/hello' => hello/app.psgi
+    mount '/mount' => mount/app.psgi
+    mount '/mount/deep' => mount/deep/app.psgi
+    mount '/mount/deep/app2' => mount/deep/app2.psgi
+    HTTP::Server::PSGI: Accepting connections at http://0:5000/
 
 
 
@@ -19,32 +28,39 @@ Plack::App::AutoMountPSGI - Auto mount path for app.psgi.
 
 This module is auto mount path for app.psgi.
 
-Mount path is a directry path.
+Mount path is a directry path. And "app.psgi" is root path. ("/")
 
 # EXAMPLE
 
-If this structure and auto\_detect.psgi there,
+If this structure and app.psgi there,
 
-    # auto_detect.psgi
+    # app.psgi
     use Plack::App::AutoMountPSGI;
 
     $app = Plack::App::AutoMountPSGI->new;
 
-    builder {
-        mount '/' => $app->to_app(
-            dir => 'app/',
-        );
-    };
+    $app->to_app( dir => '.' );
 
 
 
     # directory structure
-    |- auto_detect.psgi # to_app( dir => 'app/' );
+    |- app.psgi # to_app( dir => '.' );
     |
-    `- app/
+    |- hey.psgi
+    |
+    |- /hello
+    |   |
+    |   `- app.psgi
+    |
+    `- /mount
         |
-        |- hello/app.psgi
-        `- good_morning/app.psgi
+        |- app.psgi
+        |
+        `- deep/
+            |
+            |- app.psgi
+            |
+            `- app2.psgi
         
 
 
@@ -54,11 +70,16 @@ same a following mount path.
     use Plack::Builder;
 
     builder {
-        mount '/hello' => Plack::Util::load_psgi('hello/app.psgi');
-        mount '/good_morning' => Plack::Util::load_psgi('good_morning/app.psgi');
+        mount '/hey'             => Plack::Util::load_psgi('hey.psgi');
+        mount '/hello'           => Plack::Util::load_psgi('hello/app.psgi');
+        mount '/mount'           => Plack::Util::load_psgi('mount/app.psgi');
+        mount '/mount/deep'      => Plack::Util::load_psgi('mount/deep/app.psgi');
+        mount '/mount/deep/app2' => Plack::Util::load_psgi('mount/deep/app2.psgi');
     };
 
 # SEE ALSO
+
+You can see "example/" directory for example detail.
 
 Plack::Builder
 

@@ -4,6 +4,6 @@ use Plack::Builder;
 
 builder {
     mount '/' => sub {
-        [200, [], ["Hello!"]];
+        [200, [], ["hello/app.psgi"]];
     };
 };

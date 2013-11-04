@@ -8,12 +8,7 @@ BEGIN {
 }
 use lib $lib;
 
-
 use Plack::App::AutoMountPSGI;
 
 my $app = Plack::App::AutoMountPSGI->new;
-
-use Plack::Builder;
-builder {
-    mount '/deep' => $app->to_app();
-};
+$app->to_app();
