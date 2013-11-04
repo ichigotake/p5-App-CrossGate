@@ -111,20 +111,18 @@ Plack::App::AutoMountPSGI - Auto mount path for psgi files.
 
     # app.psgi
     use Plack::App::AutoMountPSGI;
-
     $app = Plack::App::AutoMountPSGI->new;
-
     $app->to_app(
         dir => 'example/',
     );
 
     # run
     $ plackup 
-    mount '/hey' => hey.psgi
-    mount '/hello' => hello/app.psgi
-    mount '/mount' => mount/app.psgi
-    mount '/mount/deep' => mount/deep/app.psgi
-    mount '/mount/deep/app2' => mount/deep/app2.psgi
+    auto mount '/hey' => hey.psgi
+    auto mount '/hello' => hello/app.psgi
+    auto mount '/mount' => mount/app.psgi
+    auto mount '/mount/deep' => mount/deep/app.psgi
+    auto mount '/mount/deep/app2' => mount/deep/app2.psgi
     HTTP::Server::PSGI: Accepting connections at http://0:5000/
 
 
@@ -140,11 +138,8 @@ If this structure and app.psgi there,
 
     # app.psgi
     use Plack::App::AutoMountPSGI;
-
     $app = Plack::App::AutoMountPSGI->new;
-
     $app->to_app( dir => '.' );
-
 
     # directory structure
     |- app.psgi # to_app( dir => '.' );
@@ -156,7 +151,6 @@ If this structure and app.psgi there,
         `- deep/
             |- app.psgi
             `- app2.psgi
-        
 
 same a following mount path.
 
