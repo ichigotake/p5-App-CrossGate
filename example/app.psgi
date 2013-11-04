@@ -11,4 +11,6 @@ use lib $lib;
 use Plack::App::AutoMountPSGI;
 
 my $app = Plack::App::AutoMountPSGI->new;
-$app->to_app();
+$app->to_app( dir => 'apps/' );
+
+
