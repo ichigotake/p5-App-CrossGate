@@ -24,4 +24,8 @@ cover_db/
 
 MYMETA.*
 
-/Plack-Builder-AutoDetector-*
+/Plack-App-AutoMountPSGI-*
+/.build
+/_build_params
+!Build/
+!META.json

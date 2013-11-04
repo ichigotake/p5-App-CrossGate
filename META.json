@@ -1,5 +1,5 @@
 {
-   "abstract" : "Auto detect mount path for app.psgi.",
+   "abstract" : "Auto mount path for app.psgi.",
    "author" : [
       "ichigotake <k.wisiiy@gmail.com>"
    ],
@@ -12,7 +12,7 @@
       "url" : "http://search.cpan.org/perldoc?CPAN::Meta::Spec",
       "version" : "2"
    },
-   "name" : "Plack-Builder-AutoDetector",
+   "name" : "Plack-App-AutoMountPSGI",
    "no_index" : {
       "directory" : [
          "t",
@@ -57,13 +57,13 @@
    "release_status" : "unstable",
    "resources" : {
       "bugtracker" : {
-         "web" : "https://github.com/ichigotake/p5-Plack-Builder-AutoDetector/issues"
+         "web" : "https://github.com/ichigotake/p5-Plack-App-AutoMountPSGI/issues"
       },
-      "homepage" : "https://github.com/ichigotake/p5-Plack-Builder-AutoDetector",
+      "homepage" : "https://github.com/ichigotake/p5-Plack-App-AutoMountPSGI",
       "repository" : {
          "type" : "git",
-         "url" : "git://github.com/ichigotake/p5-Plack-Builder-AutoDetector.git",
-         "web" : "https://github.com/ichigotake/p5-Plack-Builder-AutoDetector"
+         "url" : "git://github.com/ichigotake/p5-Plack-App-AutoMountPSGI.git",
+         "web" : "https://github.com/ichigotake/p5-Plack-App-AutoMountPSGI"
       }
    },
    "version" : "0.03"

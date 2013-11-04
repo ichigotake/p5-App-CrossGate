@@ -23,8 +23,8 @@ my %args = (
         'Module::Build' => 0.38,
     },
 
-    name            => 'Plack-Builder-AutoDetector',
-    module_name     => 'Plack::Builder::AutoDetector',
+    name            => 'Plack-App-AutoMountPSGI',
+    module_name     => 'Plack::App::AutoMountPSGI',
     allow_pureperl => 0,
 
     script_files => [glob('script/*'), glob('bin/*')],

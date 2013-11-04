@@ -9,8 +9,11 @@ BEGIN {
 use lib $lib;
 
 
-use Plack::Builder::AutoDetector;
+use Plack::App::AutoMountPSGI;
 
-my $builder = Plack::Builder::AutoDetector->new;
+my $app = Plack::App::AutoMountPSGI->new;
 
-$builder->build();
+use Plack::Builder;
+builder {
+    mount '/deep' => $app->to_app();
+};

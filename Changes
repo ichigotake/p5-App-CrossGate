@@ -1,6 +1,8 @@
-Revision history for Perl extension Plack-Builder-AutoDetector
+Revision history for Perl extension Plack-App-AutoMountPSGI
 
 {{$NEXT}}
+
+    - rename module to Plack::App:AutoMountPSGI
 
 0.03 2013-11-03T02:18:44Z
 

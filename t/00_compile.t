@@ -2,7 +2,7 @@ use strict;
 use Test::More;
 
 use_ok $_ for qw(
-    Plack::Builder::AutoDetector
+    Plack::App::AutoMountPSGI
 );
 
 done_testing;

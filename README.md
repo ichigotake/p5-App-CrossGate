@@ -1,15 +1,15 @@
 # NAME
 
-Plack::Builder::AutoDetector - Auto detect mount path for app.psgi.
+Plack::App::AutoMountPSGI - Auto mount path for app.psgi.
 
 # SYNOPSIS
 
     # app.psgi
-    use Plack::Builder::AutoDetector;
+    use Plack::App::AutoMountPSGI;
 
-    $builder = Plack::Builder::AutoDetector->new;
+    $app = Plack::App::AutoMountPSGI->new;
 
-    $builder->build(
+    $app->to_app(
         dir => 'app/',
     );
 
@@ -17,7 +17,7 @@ Plack::Builder::AutoDetector - Auto detect mount path for app.psgi.
 
 # DESCRIPTION
 
-Plack::Builder::AutoDetector is auto detect mount path.
+This module is auto mount path for app.psgi.
 
 Mount path is a directry path.
 
@@ -26,12 +26,12 @@ Mount path is a directry path.
 If this structure and auto\_detect.psgi there,
 
     # auto_detect.psgi
-    use Plack::Builder::AutoDetector;
+    use Plack::App::AutoMountPSGI;
 
-    $builder = Plack::Builder::AutoDetector->new;
+    $app = Plack::App::AutoMountPSGI->new;
 
     builder {
-        mount '/' => $builder->build(
+        mount '/' => $app->to_app(
             dir => 'app/',
         );
     };
@@ -39,7 +39,7 @@ If this structure and auto\_detect.psgi there,
 
 
     # directory structure
-    |- auto_detect.psgi # build( dir => 'app/' );
+    |- auto_detect.psgi # to_app( dir => 'app/' );
     |
     `- app/
         |
