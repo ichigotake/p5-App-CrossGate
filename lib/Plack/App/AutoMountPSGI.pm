@@ -102,15 +102,18 @@ Plack::App::AutoMountPSGI - Auto mount path for psgi files.
 
 =head1 SYNOPSIS
 
-    # app.psgi
+    # app.psgi with `plackup`
     use Plack::App::AutoMountPSGI;
     $app = Plack::App::AutoMountPSGI->new;
     $app->to_app(
         dir => 'example/',
     );
 
-    # run
-    $ plackup 
+    $ plackup
+
+    # or
+
+    $ plackup-auto-mount ./example/apps
     auto mount '/hey' => hey.psgi
     auto mount '/hello' => hello/app.psgi
     auto mount '/mount' => mount/app.psgi

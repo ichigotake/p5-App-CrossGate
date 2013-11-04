@@ -1,0 +1,12 @@
+#!perl
+use strict;
+use Plack::App::AutoMountPSGI;
+use Plack::Runner;
+
+my $dir = pop @ARGV || '.';
+
+my $app = Plack::App::AutoMountPSGI->new->to_app( dir => $dir );
+my $runner = Plack::Runner->new;
+$runner->parse_options(@ARGV);
+$runner->run($app);
+
