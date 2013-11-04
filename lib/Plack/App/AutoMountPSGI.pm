@@ -2,6 +2,7 @@ package Plack::App::AutoMountPSGI;
 use 5.008005;
 use strict;
 use warnings;
+use File::Basename qw/basename dirname/;
 use Path::Tiny;
 use Plack::Util;
 use Plack::Builder;
@@ -19,6 +20,7 @@ sub to_app {
     my (undef, $filename, undef) = caller;
     $args{caller} = {
         filename => $filename,
+        dirname  => dirname($filename),
     };
 
     Plack::Builder->import;
@@ -55,7 +57,8 @@ sub _get_app_configs_from_dir {
     my %args = @_;
 
     my @apps;
-    my $iter = path($args{ dir } || '.')->iterator({
+    my $base_dir = path($args{ dir } || '.')->realpath;
+    my $iter = $base_dir->iterator({
         recurse => 1,
         follow_symlinks => 0,
     });
@@ -66,23 +69,28 @@ sub _get_app_configs_from_dir {
             || $app_path !~ m/\.psgi$/) {
             next;
         }
-        my @path = split'/', $app_path;
-        my $last_index = scalar(@path)-1;
-        my $psgi_file = $path[$last_index];
-        my $endpoint = "";
-        if (0 != $last_index) {
-            $endpoint = join('/', @path[0..($last_index-1)]);
-        }
+
+        my $endpoint = dirname($app_path->realpath);
+        $endpoint =~ s/^$base_dir//;
+
+        my $psgi_file = basename($app_path->realpath);
         if ('app.psgi' ne $psgi_file) {
             my ($fname) = $psgi_file =~ m/(.*)\.psgi/;
             $endpoint .= "/$fname";
         }
 
         $endpoint = '/'.$endpoint unless $endpoint =~ m|^/|;
+        if ('.' ne $base_dir) {
+            my $exclute = "$base_dir";
+            $endpoint =~ s|^$exclute||;
+        }
+
+        (my $load_app_path = $app_path->realpath)
+            =~ s|^$args{caller}->{dirname}/||;
 
         my $conf = +{
             endpoint => $endpoint,
-            app_path => $app_path,
+            app_path => path($load_app_path),
         };
         push( @apps, $conf );
     }
