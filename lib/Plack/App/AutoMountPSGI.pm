@@ -2,6 +2,7 @@ package Plack::App::AutoMountPSGI;
 use 5.008005;
 use strict;
 use warnings;
+use parent 'Plack::Component';
 use File::Basename qw/basename dirname/;
 use Path::Tiny;
 use Plack::Util;
@@ -23,10 +24,9 @@ sub to_app {
         dirname  => dirname($filename),
     };
 
-    Plack::Builder->import;
-    builder {
-        mount( '/', $self->_build_from_directory(%args) );
-    };
+    my $builder = Plack::Builder->new;
+    $builder->mount( '/', $self->_build_from_directory(%args) );
+    $builder->to_app;
 }
 
 sub _build_from_directory {
@@ -35,11 +35,12 @@ sub _build_from_directory {
 
     my @apps = $self->_get_app_configs_from_dir(%args);
 
-    Plack::Builder->import;
+    my $builder = Plack::Builder->new;
     for my $conf ( @apps ) {
         print "auto mount '$conf->{endpoint}' => $conf->{app_path}" . $/;
-        mount( $conf->{endpoint} => $self->_build_app($conf->{app_path}) );
+        $builder->mount( $conf->{endpoint} => $self->_build_app($conf->{app_path}) );
     }
+    $builder->to_app;
 }
 
 sub _build_app {
