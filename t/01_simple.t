@@ -3,7 +3,6 @@ use warnings;
 use Test::More;
 use t::Util qw/plackup/;
 use HTTP::Request::Common qw/GET/;
-use LWP::UserAgent;
 
 plackup('apps/simple', sub {
     my $cb = shift;
