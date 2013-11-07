@@ -1,4 +1,4 @@
-package Plack::App::AutoMountPSGI;
+package App::CrossGate;
 use 5.008005;
 use strict;
 use warnings;
@@ -71,10 +71,9 @@ sub _get_app_configs_from_dir {
         my $endpoint = dirname($app_path->realpath);
         $endpoint =~ s/^$base_dir//;
 
-        my $psgi_file = basename($app_path->realpath);
-        if ('app.psgi' ne $psgi_file) {
-            my ($fname) = $psgi_file =~ m/(.*)\.psgi/;
-            $endpoint .= "/$fname";
+        my ($psgi_name) = basename($app_path->realpath) =~ m/(.*)\.psgi/;
+        if ('app' ne $psgi_name && basename($app_path->parent) ne $psgi_name) {
+            $endpoint .= "/$psgi_name";
         }
 
         $endpoint = '/'.$endpoint unless $endpoint =~ m|^/|;
@@ -99,7 +98,7 @@ __END__
 
 =head1 NAME
 
-Plack::App::AutoMountPSGI - Auto mount path for psgi files.
+App::CrossGate - Multiple application connection gate
 
 =head1 SYNOPSIS
 
@@ -114,8 +113,8 @@ Plack::App::AutoMountPSGI - Auto mount path for psgi files.
     # or
 
     # app.psgi with `plackup`
-    use Plack::App::AutoMountPSGI;
-    $app = Plack::App::AutoMountPSGI->new;
+    use App::CrossGate;
+    $app = App::CrossGate->new;
     $app->to_app(
         dir => './apps',
     );
@@ -133,8 +132,8 @@ Mount path is a directry path. And "app.psgi" is root path. ("/")
 If this structure and app.psgi there,
 
     # app.psgi
-    use Plack::App::AutoMountPSGI;
-    $app = Plack::App::AutoMountPSGI->new;
+    use App::CrossGate;
+    $app = App::CrossGate->new;
     $app->to_app( dir => '.' );
 
     # directory structure

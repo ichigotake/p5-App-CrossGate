@@ -8,9 +8,8 @@ BEGIN {
 }
 use lib $lib;
 
-use Plack::App::AutoMountPSGI;
+use App::CrossGate;
 
-my $app = Plack::App::AutoMountPSGI->new;
+my $app = App::CrossGate->new;
 $app->to_app( dir => 'apps/' );
-
 

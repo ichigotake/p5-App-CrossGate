@@ -2,7 +2,7 @@ use strict;
 use Test::More;
 
 use_ok $_ for qw(
-    Plack::App::AutoMountPSGI
+    App::CrossGate
 );
 
 done_testing;

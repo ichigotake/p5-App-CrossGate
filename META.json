@@ -12,7 +12,7 @@
       "url" : "http://search.cpan.org/perldoc?CPAN::Meta::Spec",
       "version" : "2"
    },
-   "name" : "Plack-App-AutoMountPSGI",
+   "name" : "App-CrossGate",
    "no_index" : {
       "directory" : [
          "t",
@@ -57,13 +57,13 @@
    "release_status" : "unstable",
    "resources" : {
       "bugtracker" : {
-         "web" : "https://github.com/ichigotake/p5-Plack-App-AutoMountPSGI/issues"
+         "web" : "https://github.com/ichigotake/p5-App-CrossGate/issues"
       },
-      "homepage" : "https://github.com/ichigotake/p5-Plack-App-AutoMountPSGI",
+      "homepage" : "https://github.com/ichigotake/p5-App-CrossGate",
       "repository" : {
          "type" : "git",
-         "url" : "git://github.com/ichigotake/p5-Plack-App-AutoMountPSGI.git",
-         "web" : "https://github.com/ichigotake/p5-Plack-App-AutoMountPSGI"
+         "url" : "git://github.com/ichigotake/p5-App-CrossGate.git",
+         "web" : "https://github.com/ichigotake/p5-App-CrossGate"
       }
    },
    "version" : "0.05"

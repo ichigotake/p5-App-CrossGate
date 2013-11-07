@@ -1,6 +1,6 @@
 # NAME
 
-Plack::App::AutoMountPSGI - Auto mount path for psgi files.
+App::CrossGate - Multiple application connection gate
 
 # SYNOPSIS
 
@@ -15,8 +15,8 @@ Plack::App::AutoMountPSGI - Auto mount path for psgi files.
     # or
 
     # app.psgi with `plackup`
-    use Plack::App::AutoMountPSGI;
-    $app = Plack::App::AutoMountPSGI->new;
+    use App::CrossGate;
+    $app = App::CrossGate->new;
     $app->to_app(
         dir => './apps',
     );
@@ -34,8 +34,8 @@ Mount path is a directry path. And "app.psgi" is root path. ("/")
 If this structure and app.psgi there,
 
     # app.psgi
-    use Plack::App::AutoMountPSGI;
-    $app = Plack::App::AutoMountPSGI->new;
+    use App::CrossGate;
+    $app = App::CrossGate->new;
     $app->to_app( dir => '.' );
 
     # directory structure

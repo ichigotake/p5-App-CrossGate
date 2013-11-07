@@ -23,8 +23,8 @@ my %args = (
         'Module::Build' => 0.38,
     },
 
-    name            => 'Plack-App-AutoMountPSGI',
-    module_name     => 'Plack::App::AutoMountPSGI',
+    name            => 'App-CrossGate',
+    module_name     => 'App::CrossGate',
     allow_pureperl => 0,
 
     script_files => [glob('script/*'), glob('bin/*')],
