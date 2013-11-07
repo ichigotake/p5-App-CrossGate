@@ -24,7 +24,7 @@ cover_db/
 
 MYMETA.*
 
-/Plack-App-AutoMountPSGI-*
+/App-CrossGate-*
 /.build
 /_build_params
 !Build/

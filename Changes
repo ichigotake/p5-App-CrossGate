@@ -4,6 +4,7 @@ Revision history for Perl extension Plack-App-AutoMountPSGI
 
     - add plackup script
     - fix mount bug when specified directory is deeply
+    - rename to App::CrossGate
 
 0.05 2013-11-04T05:03:02Z
 
