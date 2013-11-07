@@ -102,7 +102,7 @@ App::CrossGate - Multiple application connection gate
 
 =head1 SYNOPSIS
 
-    $ plackup-auto-mount ./example/apps
+    $ crossgate ./example/apps
     auto mount '/hey' => hey.psgi
     auto mount '/hello' => hello/app.psgi
     auto mount '/mount' => mount/app.psgi
