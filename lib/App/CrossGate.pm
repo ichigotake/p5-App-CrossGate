@@ -3,92 +3,70 @@ use 5.008005;
 use strict;
 use warnings;
 use parent 'Plack::Component';
-use File::Basename qw/basename dirname/;
+use App::CrossGate::AppBuilder;
+use File::Basename qw/dirname/;
 use Path::Tiny;
-use Plack::Util;
 use Plack::Builder;
 
 our $VERSION = "0.05";
 
 sub new {
-    my $self = bless {}, shift;
-}
-
-sub to_app {
-    my $self = shift;
+    my $class = shift;
     my %args = @_;
+    my $self = bless {%args}, $class;
 
     my (undef, $filename, undef) = caller;
-    $args{caller} = {
+    $self->{caller} = {
         filename => $filename,
         dirname  => dirname($filename),
     };
 
-    my $builder = Plack::Builder->new;
-    $builder->mount( '/', $self->_build_from_directory(%args) );
-    $builder->to_app;
+    return $self;
 }
 
-sub _build_from_directory {
+sub to_app {
+    my $self = shift;
+
+    $self->_locate_apps->to_app;
+}
+
+sub _locate_apps {
     my $self = shift;
     my %args = @_;
 
-    my @apps = $self->_get_app_configs_from_dir(%args);
-
+    my %locate;
     my $builder = Plack::Builder->new;
-    for my $conf ( @apps ) {
-        print "auto mount '$conf->{endpoint}' => $conf->{app_path}" . $/;
-        $builder->mount( $conf->{endpoint} => $self->_build_app($conf->{app_path}) );
+    my $locate_dir = path($self->{ dir } || '.')->realpath;
+    my $appBuilder = App::CrossGate::AppBuilder->new;
+    
+    # discover for self
+    if ($appBuilder->is_detected($locate_dir)) {
+        # TODO check again to I/F for reduce arguments.
+        $appBuilder->build($builder, \%locate, $locate_dir, $locate_dir, $self->{caller});
     }
-    $builder->to_app;
-}
 
-sub _build_app {
-    my $self = shift;
-    my $path = shift;
-
-    return Plack::Util::load_psgi("$path");
-}
-
-sub _get_app_configs_from_dir {
-    my $self = shift;
-    my %args = @_;
-
-    my @apps;
-    my $base_dir = path($args{ dir } || '.')->realpath;
-    my $iter = $base_dir->iterator({
+    my $iter = $locate_dir->iterator({
         recurse => 1,
         follow_symlinks => 0,
     });
     while ( my $app_path = $iter->() ) {
-        
-        if ($args{caller}->{filename} eq $app_path->realpath
-            || ! -f $app_path
-            || $app_path !~ m/\.psgi$/) {
-            next;
-        }
+        next if ! -d $app_path->realpath;
+        next if ($locate{$app_path->realpath} || '') =~ m/^$app_path->realpath/;
+        next if $self->_caller_is_own($app_path);
+        next unless $appBuilder->is_detected($app_path);
 
-        my $endpoint = dirname($app_path->realpath);
-        $endpoint =~ s/^$base_dir//;
-
-        my ($psgi_name) = basename($app_path->realpath) =~ m/(.*)\.psgi/;
-        if ('app' ne $psgi_name && basename($app_path->parent) ne $psgi_name) {
-            $endpoint .= "/$psgi_name";
-        }
-
-        $endpoint = '/'.$endpoint unless $endpoint =~ m|^/|;
-
-        (my $load_app_path = $app_path->realpath)
-            =~ s|^$args{caller}->{dirname}/||;
-
-        my $conf = +{
-            endpoint => $endpoint,
-            app_path => path($load_app_path),
-        };
-        push( @apps, $conf );
+        # TODO check again to I/F for reduce arguments.
+        $appBuilder->build($builder, \%locate, $locate_dir, $app_path, $self->{caller});
     }
 
-    return @apps;
+    $self->{locate} = \%locate;
+
+    return $builder;
+}
+
+sub _caller_is_own {
+    my ($self, $app_path) = @_;
+    return $self->{caller}->{filename} eq $app_path->realpath;
 }
 
 1;
@@ -103,27 +81,25 @@ App::CrossGate - Multiple application connection gate
 =head1 SYNOPSIS
 
     $ crossgate ./example/apps
-    auto mount '/hey' => hey.psgi
-    auto mount '/hello' => hello/app.psgi
-    auto mount '/mount' => mount/app.psgi
-    auto mount '/mount/deep' => mount/deep/app.psgi
-    auto mount '/mount/deep/app2' => mount/deep/app2.psgi
+    crossgate '/hey' => hey.psgi
+    crossgate '/hello' => hello/app.psgi
+    crossgate '/mount' => mount/app.psgi
+    crossgate '/mount/deep' => mount/deep/app.psgi
+    crossgate '/mount/deep/app2' => mount/deep/app2.psgi
     HTTP::Server::PSGI: Accepting connections at http://0:5000/
 
     # or
 
     # app.psgi with `plackup`
     use App::CrossGate;
-    $app = App::CrossGate->new;
-    $app->to_app(
-        dir => './apps',
-    );
+    $app = App::CrossGate->new( dir => './apps' );
+    $app->to_app;
 
     $ plackup
 
 =head1 DESCRIPTION
 
-This module is auto mount path for app.psgi.
+This module is auto detect path for PSGI applications.
 
 Mount path is a directry path. And "app.psgi" is root path. ("/")
 
@@ -133,11 +109,11 @@ If this structure and app.psgi there,
 
     # app.psgi
     use App::CrossGate;
-    $app = App::CrossGate->new;
-    $app->to_app( dir => '.' );
+    $app = App::CrossGate->new( dir => '.' );
+    $app->to_app;
 
     # directory structure
-    |- app.psgi # to_app( dir => '.' );
+    |- app.psgi # new( dir => '.' );
     |- hey.psgi
     |- /hello
     |   `- app.psgi

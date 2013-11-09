@@ -5,27 +5,25 @@ App::CrossGate - Multiple application connection gate
 # SYNOPSIS
 
     $ crossgate ./example/apps
-    auto mount '/hey' => hey.psgi
-    auto mount '/hello' => hello/app.psgi
-    auto mount '/mount' => mount/app.psgi
-    auto mount '/mount/deep' => mount/deep/app.psgi
-    auto mount '/mount/deep/app2' => mount/deep/app2.psgi
+    crossgate '/hey' => hey.psgi
+    crossgate '/hello' => hello/app.psgi
+    crossgate '/mount' => mount/app.psgi
+    crossgate '/mount/deep' => mount/deep/app.psgi
+    crossgate '/mount/deep/app2' => mount/deep/app2.psgi
     HTTP::Server::PSGI: Accepting connections at http://0:5000/
 
     # or
 
     # app.psgi with `plackup`
     use App::CrossGate;
-    $app = App::CrossGate->new;
-    $app->to_app(
-        dir => './apps',
-    );
+    $app = App::CrossGate->new( dir => './apps' );
+    $app->to_app;
 
     $ plackup
 
 # DESCRIPTION
 
-This module is auto mount path for app.psgi.
+This module is auto detect path for PSGI applications.
 
 Mount path is a directry path. And "app.psgi" is root path. ("/")
 
@@ -35,11 +33,11 @@ If this structure and app.psgi there,
 
     # app.psgi
     use App::CrossGate;
-    $app = App::CrossGate->new;
-    $app->to_app( dir => '.' );
+    $app = App::CrossGate->new( dir => '.' );
+    $app->to_app;
 
     # directory structure
-    |- app.psgi # to_app( dir => '.' );
+    |- app.psgi # new( dir => '.' );
     |- hey.psgi
     |- /hello
     |   `- app.psgi

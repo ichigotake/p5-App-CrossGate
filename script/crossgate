@@ -5,7 +5,7 @@ use Plack::Runner;
 
 my $dir = pop @ARGV || '.';
 
-my $app = App::CrossGate->new->to_app( dir => $dir );
+my $app = App::CrossGate->new( dir => $dir )->to_app;
 my $runner = Plack::Runner->new;
 $runner->parse_options(@ARGV);
 $runner->run($app);

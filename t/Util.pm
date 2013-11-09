@@ -12,7 +12,7 @@ sub plackup {
     my $dir = shift // die 'you must specifies apps directory path.';
     my $client = shift // die 'you must specifies client callback.';
 
-    my $app = App::CrossGate->new->to_app( dir => $FindBin::Bin."/$dir" );
+    my $app = App::CrossGate->new( dir => $FindBin::Bin."/$dir" )->to_app;
     
     test_psgi
         app => $app,
